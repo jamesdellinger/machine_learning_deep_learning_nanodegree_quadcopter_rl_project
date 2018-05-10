@@ -1,0 +1,63 @@
+Inspired by https://github.com/lirnli/OpenAI-gym-solutions/blob/master/Continuous_Deep_Deterministic_Policy_Gradient_Net/DDPG%20Class%20ver2.ipynb
+
+
+1. Use tau of .001, different from Udacity base code of .01
+
+2. Use memory batch size of 256 
+   (different from both Udacity base code and recommendations of 
+    Lillicrap, Timothy P., et al. where both recommended 64)
+
+3. Use memory buffer size of 10,000
+   (different from both Udacity base code (recommended 100,000) and recommendations of 
+    Lillicrap, Timothy P., et al. (recommended 1,000,000)
+
+5. OU Noise perturbs only a fraction of value of the predicted actions, as opposed 
+   to the entire value. This fraction decreases as number of episodes increases.
+
+6. Use a different calculation of OU Noise
+
+7. Use learning rate of .0001 (as opposed to .001) in actor's neural net
+   (Different from .001 that Udacity recommended in their base code, but in 
+    line with the recommendations of Lillicrap, Timothy P., et al.)
+
+8. BIGGEST IMPROVEMENT THAT CAUSED NETWORK TO ACTUALLY BEGIN LEARNING FOR THE   
+   MOUNTAINCARTCONTINOUSV0 TASKUse elu (Exponential Linear Units) activation function in 
+   neural net hidden layers instead of relu activations recommended by 
+   Lillicrap, Timothy P., et al. and Udacity
+
+   elu seems to work much, much better than relu for mountaincartcontinuous, published 
+   in this paper: https://arxiv.org/abs/1511.07289 by Clevert, Unterthiner, and Hochreiter
+
+9. Add L2 loss regularizer for kernel regularizer in dense, fully connected hidden layers, 
+   and add kernel initializer using variance scaling initializer with stddev = sqrt(scale / n) 
+   and n is the number of input units in the weight tensor (mode='fan_in'). And scale is 
+   a scaling factor of 2.0.
+
+   Doing this for just the actor net with L2 penalty parameter of 0.01 caused the agent to   
+   keep performance high (previously performance had gotten real good after about 50 episodes,  
+   but then began to deteriorate sometime after episode 80).
+
+   However, doing the same for critic net caused performance to tank horrible -- agent's 
+   performance just got worse and worse and worse across 100 episodes.
+
+10. I then added one final dense layer after combining the state and action
+    mini sub-network pathways in the critic net. This didn't prevent a slow, steady 
+    performance drop-off that began sometime after the 40th episode.
+
+11. Next tried to remove the second dense layer (64 units) from both the state and action 
+    mini sub-networks inside the critic
+
+12. Changed actor output activation function from 'sigmoid' to 'tanh' and specify 
+    use_bias=False
+
+13. Removed 3rd 32-unit hidden layer from actor net
+
+14. For actor and critic nets: 1st hidden layer has 400 units, and 2nd hidden layer has 300 
+    units. This greatly improved performance/consistency. Also initialized all layers in 
+    actor and critic with uniform distributions of [- 1/sqrt(f), + 1/sqrt(f)], where f 
+    is the fan-in of the layer.
+
+15. Increased memory buffer size from 10000 to 100000. Reduced batch size from 256 to 64.
+
+16. Still had problem of unexpected, temporary, steep declines in performance well after 
+    agent seemed to have learned the task. 
