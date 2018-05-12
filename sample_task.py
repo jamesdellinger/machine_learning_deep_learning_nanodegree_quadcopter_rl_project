@@ -22,7 +22,9 @@ class Sample_Task():
         self.action_repeat = 3
 
         self.state_size = self.action_repeat * 6
-        self.action_low = 0
+        # action_low must be greater than 0, so that physics_sim.py doesn't 
+        # throw a divide by zero error when calculating the copter's thrust.
+        self.action_low = 1 # 0 
         self.action_high = 900
         self.action_size = 4
 
