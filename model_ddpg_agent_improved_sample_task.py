@@ -3,6 +3,8 @@ import numpy as np
 import copy
 from collections import namedtuple, deque
 import keras
+# import BatchNormalization
+from keras.layers.normalization import BatchNormalization
 
 
 class ReplayBuffer:
@@ -28,8 +30,7 @@ class ReplayBuffer:
         e = self.experience(state, action, reward, next_state, done)
         self.memory.append(e)
 
-    #def sample(self, batch_size=64):
-    def sample(self, batch_size=256):
+    def sample(self, batch_size=64):
         """Randomly sample a batch of experiences from memory."""
         return random.sample(self.memory, k=self.batch_size)
     
@@ -106,27 +107,29 @@ class Actor:
         states = keras.layers.Input(shape=(self.state_size,), name='states')
         
         # Kernel initializer with fan-in mode and scale of 1.0
-        kernel_initializer = keras.initializers.VarianceScaling(scale=1.0, mode='fan_in', distribution='normal', seed=None)
-        # Kernel L2 loss regularizer with penalization param of 0.01
-        # kernel_regularizer = keras.regularizers.l2(0.01)
+        kernel_initializer = keras.initializers.VarianceScaling(scale=1.0, mode='fan_in', distribution='uniform', seed=None)
 
         # Add hidden layers
-        net = keras.layers.Dense(units=400, activation='elu', kernel_initializer=kernel_initializer)(states)
-        net = keras.layers.Dense(units=300, activation='elu', kernel_initializer=kernel_initializer)(net)
-        #net = keras.layers.Dense(units=32, activation='elu', kernel_initializer=kernel_initializer, kernel_regularizer=kernel_regularizer)(net)
+        net = BatchNormalization()(states)
+        net = keras.layers.Dense(units=400, activation='relu', kernel_initializer=kernel_initializer)(states)
+        net = BatchNormalization()(net)
+        net = keras.layers.Dense(units=300, activation='relu', kernel_initializer=kernel_initializer)(net)
+        net = BatchNormalization()(net)
 
         # Kernel initializer for final output layer: initialize final layer weights from 
         # a uniform distribution of [-0.003, 0.003]
-        # final_layer_initializer = keras.initializers.RandomUniform(minval=-0.003, maxval=0.003, seed=None)
+        final_layer_initializer = keras.initializers.RandomUniform(minval=-0.003, maxval=0.003, seed=None)
         
         # Add final output layer with sigmoid activation
-        raw_actions = keras.layers.Dense(units=self.action_size, activation='sigmoid', name='raw_actions', kernel_initializer=kernel_initializer)(net)
+        raw_actions = keras.layers.Dense(units=self.action_size, activation='tanh', name='raw_actions', kernel_initializer=final_layer_initializer)(net)
 
-        # Note that the raw actions produced by the output layer are in a [0.0, 1.0] range 
-        # (using a sigmoid activation function). So, we add another layer that scales each 
-        # output to the desired range for each action dimension. This produces a deterministic 
-        # action for any given state vector.
-        actions = keras.layers.Lambda(lambda x: (x * self.action_range) + self.action_low,
+        # Note that the raw actions produced by the output layer are in a [-1.0, 1.0] range 
+        # (using a 'tanh' activation function). So, we add another layer that scales each 
+        # output to the desired range for each action dimension, where the middle value of 
+        # the action range corresponds to the value in the middle of the tanh function, which 
+        # is 0. This produces a deterministic action for any given state vector.
+        middle_value_of_action_range = self.action_low +self.action_range/2
+        actions = keras.layers.Lambda(lambda x: (x * self.action_range) + middle_value_of_action_range,
             name='actions')(raw_actions)
 
         # Create Keras model
@@ -184,33 +187,35 @@ class Critic:
         actions = keras.layers.Input(shape=(self.action_size,), name='actions')
         
         # Kernel initializer with fan-in mode and scale of 1.0
-        kernel_initializer = keras.initializers.VarianceScaling(scale=1.0, mode='fan_in', distribution='normal', seed=None)
+        kernel_initializer = keras.initializers.VarianceScaling(scale=1.0, mode='fan_in', distribution='uniform', seed=None)
         # Kernel L2 loss regularizer with penalization param of 0.01
-        kernel_regularizer = keras.regularizers.l2(0.001)
-
+        kernel_regularizer = keras.regularizers.l2(0.01)
+        
         # Add hidden layer(s) for state pathway
-        net_states = keras.layers.Dense(units=400, activation='elu', kernel_initializer=kernel_initializer)(states)
-        # net_states = keras.layers.Dense(units=64, activation='elu', kernel_initializer=kernel_initializer, kernel_regularizer=kernel_regularizer)(net_states)
+        net_states = BatchNormalization()(states)
+        net_states = keras.layers.Dense(units=400, activation='relu', kernel_initializer=kernel_initializer)(net_states)
+        net_states = BatchNormalization()(net_states)
 
         # Add hidden layer(s) for action pathway
-        net_actions = keras.layers.Dense(units=400, activation='elu', kernel_initializer=kernel_initializer)(actions)
-        # net_actions = keras.layers.Dense(units=64, activation='elu', kernel_initializer=kernel_initializer, kernel_regularizer=kernel_regularizer)(net_actions)
+        net_actions = BatchNormalization()(actions)
+        net_actions = keras.layers.Dense(units=400, activation='relu', kernel_initializer=kernel_initializer)(actions)
+        net_actions = BatchNormalization()(net_actions)
 
         # Combine state and action pathways. The two layers can first be processed via separate 
         # "pathways" (mini sub-networks), but eventually need to be combined.
         net = keras.layers.Add()([net_states, net_actions])
 
         # Add more layers to the combined network if needed
-        net = keras.layers.Dense(units=300, activation='elu', kernel_initializer=kernel_initializer)(net)
+        net = keras.layers.Dense(units=300, activation='relu', kernel_initializer=kernel_initializer)(net)
 
         # Kernel initializer for final output layer: initialize final layer weights from 
         # a uniform distribution of [-0.003, 0.003]
-        # final_layer_initializer = keras.initializers.RandomUniform(minval=-0.003, maxval=0.003, seed=None)
+        final_layer_initializer = keras.initializers.RandomUniform(minval=-0.003, maxval=0.003, seed=None)
         
         # Add final output layer to produce action values (Q values). The final output 
-        # of this model is the Q-value for any given (state, action) pair.
-        Q_values = keras.layers.Dense(units=1, activation=None, name='q_values', kernel_initializer=kernel_initializer, kernel_regularizer=kernel_regularizer)(net)
-        # kernel_regularizer=kernel_regularizer
+        # of this model is the Q-value for any given (state, action) pair. Use a 
+        # kernel L2 loss regularizer at this layer as well, with L2=0.01
+        Q_values = keras.layers.Dense(units=1, activation=None, name='q_values', kernel_initializer=final_layer_initializer, kernel_regularizer=kernel_regularizer)(net)
         
         # Create Keras model
         self.model = keras.models.Model(inputs=[states, actions], outputs=Q_values)

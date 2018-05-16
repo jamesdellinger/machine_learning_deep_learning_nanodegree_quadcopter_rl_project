@@ -2,7 +2,7 @@ import numpy as np
 import gym
 from model import Actor, Critic, OUNoise, ReplayBuffer
 
-class DDPG_Agent():
+class DDPG_Agent_Custom_Task():
     """
     Reinforcement Learning agent that learns by using DDPG, or Deep 
     Deterministic Policy Gradients. An actor-critic method, but with 
@@ -18,17 +18,12 @@ class DDPG_Agent():
     https://arxiv.org/pdf/1509.02971.pdf
     
     Code in this class, as well as from the Actor, Critic, OUNoise, and 
-    ReplayBuffer classes in model.py was adopted from sample code that 
-    introduced DDPG in the Reinforcement Learning lesson Udacity's 
-    Machine Learning Engineer nanodegree.
+    ReplayBuffer classes in model.py was 
+    adopted from sample code that introduced DDPG in the Reinforcement Learning 
+    lesson in Udacity's Machine Learning Engineer nanodegree.
     
-    Certain modifications to the Udacity approach, such as using an 
-    initial exploration policy to warm up a larger memory buffer 
-    (batch size of 256 instead of 64) was inspired by another DDPG solution 
-    to OpenAI Gym's 'MountainCarContinuous-v0' environment. This 
-    implementation can be viewed at: 
-    
-    https://github.com/lirnli/OpenAI-gym-solutions/blob/master/Continuous_Deep_Deterministic_Policy_Gradient_Net/DDPG%20Class%20ver2.ipynb
+    Hyperparameter values and architecture are identical to those recommended by 
+    Lillicrap, Timothy P., et al. in https://arxiv.org/pdf/1509.02971.pdf.
     
     Note that we will need two copies of each model - one local and one target. 
     This is an extension of the "Fixed Q Targets" technique from Deep Q-Learning, 
@@ -36,42 +31,13 @@ class DDPG_Agent():
     producing target values.
     """
     def __init__(self, task):
+        
+        # Task (environment) information
         self.task = task
-        
-        # Flag to keep track of whether the task comes from an OpenAi Gym env
-        # reference below in reset() method.
-        self.taskIsOpenAiGymEnv = False
-        
-        # Check to see if task is an OpenAi Gym environment.
-        # If the task is a gym env, it will have the 'action_space' 
-        # attribute. 
-        try:
-            # For OpenAI Gym envs, the following attributes need 
-            # to be calculated differently from from a standard 
-            # Quadcopter task.
-            self.action_size = task.action_space.shape[0]
-            self.action_low = task.action_space.low[0]
-            self.action_high = task.action_space.high[0]
-            # If task is OpenAi Gym 'MountainCarContinuous-v0' environment
-            # Adjust state size to take advantage of action_repeat parameter.
-            # Must do this here when running the 'MountainCarContinuous-v0' environment.
-            # For Quadcopter tasks, action_repeat value is defined inside the task's class.
-            # (see task.py for reference)
-            self.action_repeat = 3
-            self.state_size = task.observation_space.shape[0] * self.action_repeat
-            self.taskIsOpenAiGymEnv = True   # Set to True since we know we're in an OpenAi Gym env
-            
-        # If an AttributeError gets thrown, we assume that the DDPG_Agent() object is 
-        # being initiated with the type of quadcopter task for which the agent was 
-        # originally architected.
-        except AttributeError:
-            # Task is a Quadcopter task so can calculate the 
-            # following attributes in a manner consistent with 
-            # overall architecture of the agent/model/quadcopter task.
-            self.state_size = task.state_size
-            self.action_size = task.action_size
-            self.action_low = task.action_low
-            self.action_high = task.action_high
+        self.state_size = task.state_size
+        self.action_size = task.action_size
+        self.action_low = task.action_low
+        self.action_high = task.action_high
 
         # Actor (Policy) Model
         self.actor_local = Actor(self.state_size, self.action_size, self.action_low, self.action_high)
@@ -94,27 +60,17 @@ class DDPG_Agent():
         self.noise = OUNoise(self.action_size, self.exploration_mu, self.exploration_theta, self.exploration_sigma)
 
         # Replay memory
-        self.buffer_size = 10000
-        # self.buffer_size = 100000
-        self.batch_size = 256
-        # self.batch_size = 64
+        self.buffer_size = 100000
+        self.batch_size = 64
         self.memory = ReplayBuffer(self.buffer_size, self.batch_size)
 
         # Algorithm parameters
-        self.gamma = 0.99  # discount factor
-        # self.tau = 0.01
-        self.tau = 0.001  # for soft update of target parameters
+        self.gamma = 0.99 # discount factor
+        self.tau = 0.001 # for soft update of target parameters
 
     def reset_episode(self):
-        self.noise.reset()
+        #self.noise.reset()
         state = self.task.reset()
-        
-        # If task is OpenAi Gym 'MountainCarContinuous-v0' environment, must 
-        # expand the state returned from the gym environment according to 
-        # our chosen action_repeat parameter value.
-        if self.taskIsOpenAiGymEnv:
-            state = np.concatenate([state] * self.action_repeat) 
-        
         self.last_state = state
         return state
 
@@ -123,8 +79,7 @@ class DDPG_Agent():
         self.memory.add(self.last_state, action, reward, next_state, done)
 
         # Learn, if enough samples are available in memory
-        # if len(self.memory) > self.batch_size:
-        if len(self.memory) > self.batch_size*3:
+        if len(self.memory) > self.batch_size:
             experiences = self.memory.sample(self.batch_size)
             self.learn(experiences)
 
@@ -132,7 +87,7 @@ class DDPG_Agent():
         self.last_state = next_state
 
     def act(self, state):
-        """Returns actions for given state(s) as per current policy."""
+        """Returns action(s) for given state(s) as per current policy."""
         state = np.reshape(state, [-1, self.state_size])
         action = self.actor_local.model.predict(state)[0]
         return list(action + self.noise.sample())  # add some noise for exploration
@@ -147,7 +102,6 @@ class DDPG_Agent():
         next_states = np.vstack([e.next_state for e in experiences if e is not None])
 
         # Get predicted next-state actions and Q values from target models
-        # Q_targets_next = critic_target(next_state, actor_target(next_state))
         actions_next = self.actor_target.model.predict_on_batch(next_states)
         Q_targets_next = self.critic_target.model.predict_on_batch([next_states, actions_next])
 
@@ -172,4 +126,3 @@ class DDPG_Agent():
 
         new_weights = self.tau * local_weights + (1 - self.tau) * target_weights
         target_model.set_weights(new_weights)
-        

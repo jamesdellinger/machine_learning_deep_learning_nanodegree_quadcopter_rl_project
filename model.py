@@ -2,8 +2,9 @@ import random
 import numpy as np
 import copy
 from collections import namedtuple, deque
-from keras import layers, models, optimizers
-from keras import backend as K
+import keras
+# import BatchNormalization
+from keras.layers.normalization import BatchNormalization
 
 
 class ReplayBuffer:
@@ -29,8 +30,7 @@ class ReplayBuffer:
         e = self.experience(state, action, reward, next_state, done)
         self.memory.append(e)
 
-    #def sample(self, batch_size=64):
-    def sample(self, batch_size=256):
+    def sample(self, batch_size=64):
         """Randomly sample a batch of experiences from memory."""
         return random.sample(self.memory, k=self.batch_size)
     
@@ -99,57 +99,73 @@ class Actor:
         self.action_low = action_low
         self.action_high = action_high
         self.action_range = self.action_high - self.action_low
-
-        # Initialize any other variables here
-
         self.build_model()
 
     def build_model(self):
         """Build an actor (policy) network that maps states -> actions."""
         # Define input layer (states)
-        states = layers.Input(shape=(self.state_size,), name='states')
+        states = keras.layers.Input(shape=(self.state_size,), name='states')
+        
+        # Kernel initializer with fan-in mode and scale of 1.0
+        kernel_initializer = keras.initializers.VarianceScaling(scale=1.0, mode='fan_in', distribution='uniform', seed=None)
 
         # Add hidden layers
-        net = layers.Dense(units=32, activation='relu')(states)
-        net = layers.Dense(units=64, activation='relu')(net)
-        net = layers.Dense(units=32, activation='relu')(net)
+        net = BatchNormalization()(states)
+        net = keras.layers.Dense(units=400, activation='relu', kernel_initializer=kernel_initializer)(states)
+        net = BatchNormalization()(net)
+        net = keras.layers.Dense(units=300, activation='relu', kernel_initializer=kernel_initializer)(net)
+        net = BatchNormalization()(net)
 
-        # Try different layer sizes, activations, add batch normalization, regularizers, etc.
-
+        # Kernel initializer for final output layer: initialize final layer weights from 
+        # a uniform distribution of [-0.003, 0.003]
+        final_layer_initializer = keras.initializers.RandomUniform(minval=-0.003, maxval=0.003, seed=None)
+        
         # Add final output layer with sigmoid activation
-        raw_actions = layers.Dense(units=self.action_size, activation='sigmoid',
-            name='raw_actions')(net)
+        raw_actions = keras.layers.Dense(units=self.action_size, activation='tanh', name='raw_actions', kernel_initializer=final_layer_initializer)(net)
 
-        # Note that the raw actions produced by the output layer are in a [0.0, 1.0] range 
-        # (using a sigmoid activation function). So, we add another layer that scales each 
-        # output to the desired range for each action dimension. This produces a deterministic 
-        # action for any given state vector.
-        actions = layers.Lambda(lambda x: (x * self.action_range) + self.action_low,
+        # Note that the raw actions produced by the output layer are in a [-1.0, 1.0] range 
+        # (using a 'tanh' activation function). So, we add another layer that scales each 
+        # output to the desired range for each action dimension, where the middle value of 
+        # the action range corresponds to the value in the middle of the tanh function, which 
+        # is 0. This produces a deterministic action for any given state vector.
+        middle_value_of_action_range = self.action_low +self.action_range/2
+        actions = keras.layers.Lambda(lambda x: (x * self.action_range) + middle_value_of_action_range,
             name='actions')(raw_actions)
 
         # Create Keras model
-        self.model = models.Model(inputs=states, outputs=actions)
+        self.model = keras.models.Model(inputs=states, outputs=actions)
 
         # Define loss function using action value (Q value) gradients
         # These gradients will need to be computed using the critic model, and 
         # fed in while training. This is why they are specified as part of the 
         # "inputs" used in the training function.
-        action_gradients = layers.Input(shape=(self.action_size,))
-        loss = K.mean(-action_gradients * actions)
-
-        # Incorporate any additional losses here (e.g. from regularizers)
+        action_gradients = keras.layers.Input(shape=(self.action_size,))
+        loss = keras.backend.mean(-action_gradients * actions)
 
         # Define optimizer and training function
-        optimizer = optimizers.Adam()
+        # Use learning rate of 0.0001
+        optimizer = keras.optimizers.Adam(lr=0.0001)
         updates_op = optimizer.get_updates(params=self.model.trainable_weights, loss=loss)
-        self.train_fn = K.function(
-            inputs=[self.model.input, action_gradients, K.learning_phase()],
+        self.train_fn = keras.backend.function(
+            inputs=[self.model.input, action_gradients, keras.backend.learning_phase()],
             outputs=[],
             updates=updates_op)
 
 
 class Critic:
-    """Critic (Value) Model."""
+    """Critic (Value) Model, using Deep Deterministic Policy Gradients 
+    or DDPG. An actor-critic method, but with the key idea that the 
+    underlying policy function used is deterministic in nature, with 
+    some noise added in externally to produce the desired stochasticity 
+    in actions taken.
+
+    Algorithm originally presented in this paper:
+
+    Lillicrap, Timothy P., et al., 2015. Continuous Control with Deep 
+    Reinforcement Learning
+
+    https://arxiv.org/pdf/1509.02971.pdf
+    """
 
     def __init__(self, state_size, action_size):
         """Initialize parameters and build model.
@@ -161,54 +177,62 @@ class Critic:
         """
         self.state_size = state_size
         self.action_size = action_size
-
-        # Initialize any other variables here
-
         self.build_model()
 
     def build_model(self):
         """Build a critic (value) network that maps (state, action) pairs -> Q-values."""
         # Define input layers. The critic model needs to map (state, action) pairs to 
         # their Q-values. This is reflected in the following input layers.
-        states = layers.Input(shape=(self.state_size,), name='states')
-        actions = layers.Input(shape=(self.action_size,), name='actions')
-
+        states = keras.layers.Input(shape=(self.state_size,), name='states')
+        actions = keras.layers.Input(shape=(self.action_size,), name='actions')
+        
+        # Kernel initializer with fan-in mode and scale of 1.0
+        kernel_initializer = keras.initializers.VarianceScaling(scale=1.0, mode='fan_in', distribution='uniform', seed=None)
+        # Kernel L2 loss regularizer with penalization param of 0.01
+        kernel_regularizer = keras.regularizers.l2(0.01)
+        
         # Add hidden layer(s) for state pathway
-        net_states = layers.Dense(units=32, activation='relu')(states)
-        net_states = layers.Dense(units=64, activation='relu')(net_states)
+        net_states = BatchNormalization()(states)
+        net_states = keras.layers.Dense(units=400, activation='relu', kernel_initializer=kernel_initializer)(net_states)
+        net_states = BatchNormalization()(net_states)
 
         # Add hidden layer(s) for action pathway
-        net_actions = layers.Dense(units=32, activation='relu')(actions)
-        net_actions = layers.Dense(units=64, activation='relu')(net_actions)
-
-        # Try different layer sizes, activations, add batch normalization, regularizers, etc.
+        net_actions = BatchNormalization()(actions)
+        net_actions = keras.layers.Dense(units=400, activation='relu', kernel_initializer=kernel_initializer)(actions)
+        net_actions = BatchNormalization()(net_actions)
 
         # Combine state and action pathways. The two layers can first be processed via separate 
         # "pathways" (mini sub-networks), but eventually need to be combined.
-        net = layers.Add()([net_states, net_actions])
-        net = layers.Activation('relu')(net)
+        net = keras.layers.Add()([net_states, net_actions])
 
         # Add more layers to the combined network if needed
+        net = keras.layers.Dense(units=300, activation='relu', kernel_initializer=kernel_initializer)(net)
 
+        # Kernel initializer for final output layer: initialize final layer weights from 
+        # a uniform distribution of [-0.003, 0.003]
+        final_layer_initializer = keras.initializers.RandomUniform(minval=-0.003, maxval=0.003, seed=None)
+        
         # Add final output layer to produce action values (Q values). The final output 
-        # of this model is the Q-value for any given (state, action) pair.
-        Q_values = layers.Dense(units=1, name='q_values')(net)
-
+        # of this model is the Q-value for any given (state, action) pair. Use a 
+        # kernel L2 loss regularizer at this layer as well, with L2=0.01
+        Q_values = keras.layers.Dense(units=1, activation=None, name='q_values', kernel_initializer=final_layer_initializer, kernel_regularizer=kernel_regularizer)(net)
+        
         # Create Keras model
-        self.model = models.Model(inputs=[states, actions], outputs=Q_values)
+        self.model = keras.models.Model(inputs=[states, actions], outputs=Q_values)
 
         # Define optimizer and compile model for training with built-in loss function
-        optimizer = optimizers.Adam()
+        # Use learning rate of 0.001
+        optimizer = keras.optimizers.Adam(lr=0.001)
         self.model.compile(optimizer=optimizer, loss='mse')
 
         # Compute action gradients (derivative of Q values w.r.t. to actions). We also need 
         # to compute the gradient of every Q-value with respect to its corresponding action 
         # vector. This is needed for training the actor model. 
         # This step needs to be performed explicitly.
-        action_gradients = K.gradients(Q_values, actions)
+        action_gradients = keras.backend.gradients(Q_values, actions)
 
         # Finally, a separate function needs to be defined to provide access to these gradients. 
         # Define an additional function to fetch action gradients (to be used by actor model).
-        self.get_action_gradients = K.function(
-            inputs=[*self.model.input, K.learning_phase()],
+        self.get_action_gradients = keras.backend.function(
+            inputs=[*self.model.input, keras.backend.learning_phase()],
             outputs=action_gradients)

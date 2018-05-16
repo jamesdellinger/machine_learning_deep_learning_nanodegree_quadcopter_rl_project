@@ -18,17 +18,12 @@ class DDPG_Agent_Improved_Sample_Task():
     https://arxiv.org/pdf/1509.02971.pdf
     
     Code in this class, as well as from the Actor, Critic, OUNoise, and 
-    ReplayBuffer classes in model.py was adopted from sample code that 
-    introduced DDPG in the Reinforcement Learning lesson Udacity's 
-    Machine Learning Engineer nanodegree.
+    ReplayBuffer classes in model_ddpg_agent_improved_sample_task.py was 
+    adopted from sample code that introduced DDPG in the Reinforcement Learning 
+    lesson in Udacity's Machine Learning Engineer nanodegree.
     
-    Certain modifications to the Udacity approach, such as using an 
-    initial exploration policy to warm up a larger memory buffer 
-    (batch size of 256 instead of 64) was inspired by another DDPG solution 
-    to OpenAI Gym's 'MountainCarContinuous-v0' environment. This 
-    implementation can be viewed at: 
-    
-    https://github.com/lirnli/OpenAI-gym-solutions/blob/master/Continuous_Deep_Deterministic_Policy_Gradient_Net/DDPG%20Class%20ver2.ipynb
+    Hyperparameter values and architecture are identical to those recommended by 
+    Lillicrap, Timothy P., et al. in https://arxiv.org/pdf/1509.02971.pdf.
     
     Note that we will need two copies of each model - one local and one target. 
     This is an extension of the "Fixed Q Targets" technique from Deep Q-Learning, 
@@ -59,32 +54,22 @@ class DDPG_Agent_Improved_Sample_Task():
         # OU Noise process.
         # Specify a mean of zero, and that will have the effect of reducing 
         # exploration as we make progress on learning the task.
-        
-#         x = self.state
-#         dx = self.theta * (self.mu - x) + self.sigma * np.random.randn(len(x))
-#         self.state = x + dx
-        
         self.exploration_mu = 0
-        #self.exploration_theta = 0.15
-        self.exploration_theta = 0.15 #0.2   #0.1
-        #self.exploration_sigma = 0.2
-        self.exploration_sigma = 0.2 #0.05   #0.01
+        self.exploration_theta = 0.15
+        self.exploration_sigma = 0.2
         self.noise = OUNoise(self.action_size, self.exploration_mu, self.exploration_theta, self.exploration_sigma)
 
         # Replay memory
-        self.buffer_size = 100000 #10000
-        # self.buffer_size = 100000
-        self.batch_size = 64 #256
-        # self.batch_size = 64
+        self.buffer_size = 100000
+        self.batch_size = 64
         self.memory = ReplayBuffer(self.buffer_size, self.batch_size)
 
         # Algorithm parameters
-        self.gamma = 0.99  # discount factor
-        # self.tau = 0.01
-        self.tau = 0.01 #0.00001 #0.0001 #0.001  # for soft update of target parameters
+        self.gamma = 0.99 # discount factor
+        self.tau = 0.001 # for soft update of target parameters
 
     def reset_episode(self):
-        self.noise.reset()
+        #self.noise.reset()
         state = self.task.reset()
         self.last_state = state
         return state
@@ -94,8 +79,7 @@ class DDPG_Agent_Improved_Sample_Task():
         self.memory.add(self.last_state, action, reward, next_state, done)
 
         # Learn, if enough samples are available in memory
-        # if len(self.memory) > self.batch_size:
-        if len(self.memory) > self.batch_size*3:
+        if len(self.memory) > self.batch_size:
             experiences = self.memory.sample(self.batch_size)
             self.learn(experiences)
 
@@ -107,7 +91,6 @@ class DDPG_Agent_Improved_Sample_Task():
         state = np.reshape(state, [-1, self.state_size])
         action = self.actor_local.model.predict(state)[0]
         return list(action + self.noise.sample())  # add some noise for exploration
-        #return action
 
     def learn(self, experiences):
         """Update policy and value parameters using given batch of experience tuples."""

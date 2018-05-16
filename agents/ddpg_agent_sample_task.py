@@ -19,7 +19,7 @@ class DDPG_Agent_Sample_Task():
     https://arxiv.org/pdf/1509.02971.pdf
     
     Code in this class, as well as from the Actor, Critic, and 
-    ReplayBuffer classes in model_ddpg_agent_mountain_car_continuous.py was 
+    ReplayBuffer classes in model_ddpg_agent_sample_task.py was 
     adopted from sample code that introduced DDPG in the Reinforcement Learning 
     lesson in Udacity's Machine Learning Engineer nanodegree.
     
