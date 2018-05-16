@@ -74,6 +74,7 @@ dependencies:
   - pandoc=1.19.2.1=ha5e8f32_1
   - pandocfilters=1.4.2=py35hff87490_1
   - parso=0.1.1=py35hbda7c10_0
+  - patsy=0.5.0=py35_0
   - pcre=8.41=hfb6ab37_1
   - pexpect=4.4.0=py35_0
   - pickleshare=0.7.4=py35h9517181_0
@@ -96,6 +97,7 @@ dependencies:
   - requests=2.18.4=py35h0d65e6b_1
   - scikit-learn=0.17.1=np111py35_2
   - scipy=0.18.1=np111py35_0
+  - seaborn=0.8.1=py35he0bbe96_0
   - send2trash=1.5.0=py35_0
   - setuptools=38.5.1=py35_0
   - simplegeneric=0.8.1=py35_2
@@ -106,6 +108,7 @@ dependencies:
   - sphinxcontrib=1.0=py35h3eabf46_1
   - sphinxcontrib-websupport=1.0.1=py35hcb4ca16_1
   - sqlite=3.22.0=h3efe00b_0
+  - statsmodels=0.8.0=py35ha7c9052_0
   - terminado=0.8.1=py35_1
   - testpath=0.3.1=py35hf8009f4_0
   - tk=8.6.7=h35a86e2_3

@@ -93,6 +93,7 @@ https://repo.continuum.io/pkgs/main/osx-64/jsonschema-2.6.0-py35h2dd9e4b_0.tar.b
 https://repo.continuum.io/pkgs/main/osx-64/jupyter_core-4.4.0-py35h4ad9194_0.tar.bz2
 https://repo.continuum.io/pkgs/main/osx-64/matplotlib-2.2.2-py35ha7267d0_0.tar.bz2
 https://repo.continuum.io/pkgs/main/osx-64/pandas-0.22.0-py35h0a44026_0.tar.bz2
+https://repo.continuum.io/pkgs/main/osx-64/patsy-0.5.0-py35_0.tar.bz2
 https://conda.anaconda.org/conda-forge/osx-64/protobuf-3.5.2-py35_0.tar.bz2
 https://repo.continuum.io/pkgs/main/osx-64/pygments-2.2.0-py35h392a662_0.tar.bz2
 https://repo.continuum.io/pkgs/free/osx-64/scikit-learn-0.17.1-np111py35_2.tar.bz2
@@ -102,8 +103,10 @@ https://repo.continuum.io/pkgs/main/osx-64/nbformat-4.4.0-py35h41c2038_0.tar.bz2
 https://repo.continuum.io/pkgs/main/osx-64/pip-9.0.1-py35_5.tar.bz2
 https://repo.continuum.io/pkgs/main/osx-64/prompt_toolkit-1.0.15-py35h93950c5_0.tar.bz2
 https://repo.continuum.io/pkgs/main/osx-64/pyopenssl-17.5.0-py35h4065cf8_0.tar.bz2
+https://repo.continuum.io/pkgs/main/osx-64/statsmodels-0.8.0-py35ha7c9052_0.tar.bz2
 https://repo.continuum.io/pkgs/main/osx-64/nbconvert-5.3.1-py35h63fb950_0.tar.bz2
 https://conda.anaconda.org/conda-forge/noarch/pbr-4.0.2-py_0.tar.bz2
+https://repo.continuum.io/pkgs/main/osx-64/seaborn-0.8.1-py35he0bbe96_0.tar.bz2
 https://repo.continuum.io/pkgs/main/osx-64/urllib3-1.22-py35he002d57_0.tar.bz2
 https://conda.anaconda.org/conda-forge/osx-64/mock-2.0.0-py35_0.tar.bz2
 https://repo.continuum.io/pkgs/main/osx-64/requests-2.18.4-py35h0d65e6b_1.tar.bz2
