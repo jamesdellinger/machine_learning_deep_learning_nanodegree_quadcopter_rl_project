@@ -1,5 +1,6 @@
 # Deep RL Quadcopter Controller
 ## Machine Learning Engineer Nanodegree
+## Topic: Reinforcement Learning
 
 *Teach a Quadcopter How to Fly!*
 
