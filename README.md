@@ -8,7 +8,7 @@
 
 [html version](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/report.html)
 
-##
+## Project Overview
 
 In this project, you will design an agent to fly a quadcopter, and then train it using a reinforcement learning algorithm of your choice!
 
