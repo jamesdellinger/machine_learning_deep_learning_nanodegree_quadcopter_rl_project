@@ -2,7 +2,15 @@
 
 *Teach a Quadcopter How to Fly!*
 
-In this project, you will design an agent to fly a quadcopter, and then train it using a reinforcement learning algorithm of your choice! 
+### My completed project is here:
+
+[ipython notebook](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.ipynb)
+
+[html version](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/report.html)
+
+##
+
+In this project, you will design an agent to fly a quadcopter, and then train it using a reinforcement learning algorithm of your choice!
 
 ## Project Instructions
 
@@ -20,7 +28,7 @@ conda create -n quadcop python=3.6 matplotlib numpy pandas
 source activate quadcop
 ```
 
-3. Create an [IPython kernel](http://ipython.readthedocs.io/en/stable/install/kernel_install.html) for the `quadcop` environment. 
+3. Create an [IPython kernel](http://ipython.readthedocs.io/en/stable/install/kernel_install.html) for the `quadcop` environment.
 ```
 python -m ipykernel install --user --name quadcop --display-name "quadcop"
 ```
