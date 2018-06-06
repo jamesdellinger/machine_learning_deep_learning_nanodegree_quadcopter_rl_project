@@ -8,6 +8,8 @@
 
 [ipython notebook](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.ipynb)
 
+[pdf notebook](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.pdf)
+
 [html version](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/report.html)
 
 ## Project Overview
