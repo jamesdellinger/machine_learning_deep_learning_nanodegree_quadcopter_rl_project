@@ -12,6 +12,12 @@
 
 [html version](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/report.html)
 
+### Project Grading and Evaluation:
+
+[Project Review](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_project_review.pdf)
+
+[Project Grading Rubric](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project_grading_rubric.pdf)
+
 ## Project Overview
 The Quadcopter or Quadrotor Helicopter is becoming an increasingly popular aircraft for both personal and professional use. Its maneuverability lends itself to many applications, from last-mile delivery to cinematography, from acrobatics to search-and-rescue.
 
