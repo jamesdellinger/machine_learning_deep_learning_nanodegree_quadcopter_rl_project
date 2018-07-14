@@ -1,5 +1,5 @@
 # Project: Deep Reinforcement Learning Quadcopter Controller
-*Teach a Quadcopter how to fly.*
+*Teaching a Quadcopter how to fly.*
 ### For Udacity's Machine Learning Engineer and Deep Learning Nanodegrees
 <img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/mlndlogo.png" height="140">     <img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/dlndlogo.png" height="140">
 
@@ -9,7 +9,7 @@
 
 * I designed a reinforcement learning task for flying a quadcopter in a simulated environment, and built an agent that autonomously learned to perform the task.
 
-    <img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/images/parrot-ar-drone.jpg" height="200">
+    <img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/images/parrot-ar-drone.jpg" height="160">
 * My agent had to learn how to best manage the quadcopter's four points of thrust in order to complete the behavior mandated by the learning task.
 * The goal of my task was for an agent to learn to take off, ascend to a fixed height, and keep the quadcopter hovering at this height while remaining directly above the position on the ground from where it took off.
 * This involved my crafting a straightforward reward function that would incentivize an agent to first take off, and then remain hovering at a constant altitude.
