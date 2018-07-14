@@ -1,7 +1,7 @@
 # Project: Deep Reinforcement Learning Quadcopter Controller
-*Teach a Quadcopter How to Fly.*
+*Teach a Quadcopter how to fly.*
 ### For Udacity's Machine Learning Engineer and Deep Learning Nanodegrees
-<img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_dog_project/blob/master/mlndlogo.png" height="140">     <img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_dog_project/blob/master/dlndlogo.png" height="140">
+<img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/mlndlogo.png" height="140">     <img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/dlndlogo.png" height="140">
 
 ### Topic: Deep Reinforcement Learning
 
