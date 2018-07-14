@@ -1,22 +1,27 @@
-# Deep RL Quadcopter Controller
-## Machine Learning Engineer Nanodegree
-## Topic: Reinforcement Learning
+# Project: Deep Reinforcement Learning Quadcopter Controller
+*Teach a Quadcopter How to Fly.*
+### For Udacity's Machine Learning Engineer and Deep Learning Nanodegrees
+<img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_dog_project/blob/master/mlndlogo.png" height="140">     <img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_dog_project/blob/master/dlndlogo.png" height="140">
 
-*Teach a Quadcopter How to Fly!*
+### Topic: Deep Reinforcement Learning
 
-### My completed project is here:
+### Overview:
 
-[ipython notebook](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.ipynb)
+*
 
-[pdf version](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.pdf)
+### Concepts:
 
-[html version](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/report.html)
+*
+
+### My completed project:
+
+* [ipython notebook](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.ipynb) / [html version](http://htmlpreview.github.com/?https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/report.html) / [pdf version](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.pdf)
 
 ### Project Grading and Evaluation:
 
-[Project Review](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_project_review.pdf)
+* [Project Review](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_project_review.pdf)
 
-[Project Grading Rubric](https://github.com/jamesdellinger/machine_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project_grading_rubric.pdf)
+* [Project Grading Rubric](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project_grading_rubric.pdf)
 
 ## Project Overview
 The Quadcopter or Quadrotor Helicopter is becoming an increasingly popular aircraft for both personal and professional use. Its maneuverability lends itself to many applications, from last-mile delivery to cinematography, from acrobatics to search-and-rescue.
@@ -30,32 +35,8 @@ The next step in this evolution is to enable quadcopters to autonomously achieve
 ## Project Highlights
 In this project, you will design your own reinforcement learning task and an agent to complete it. Note that getting a reinforcement learning agent to learn what you actually want it to learn can be hard, and very time consuming. For this project, we strongly encourage you to take the time to tweak your task and agent until your agent is able to demonstrate that it has learned your chosen task, but this is not necessary to complete the project. As long as you take the time to describe many attempts at specifying a reasonable reward function and a well-designed agent with well-informed hyperparameters, this is enough to pass the project.
 
-## Project Instructions
+### Dependencies:
 
-1. Clone the repository and navigate to the downloaded folder.
+* [requirements.txt](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/requirements.txt)
 
-```
-git clone https://github.com/udacity/RL-Quadcopter-2.git
-cd RL-Quadcopter-2
-```
-
-2. Create and activate a new environment.
-
-```
-conda create -n quadcop python=3.6 matplotlib numpy pandas
-source activate quadcop
-```
-
-3. Create an [IPython kernel](http://ipython.readthedocs.io/en/stable/install/kernel_install.html) for the `quadcop` environment.
-```
-python -m ipykernel install --user --name quadcop --display-name "quadcop"
-```
-
-4. Open the notebook.
-```
-jupyter notebook Quadcopter_Project.ipynb
-```
-
-5. Before running code, change the kernel to match the `quadcop` environment by using the drop-down menu (**Kernel > Change kernel > quadcop**). Then, follow the instructions in the notebook.
-
-6. You will likely need to install more pip packages to complete this project.  Please curate the list of packages needed to run your project in the `requirements.txt` file in the repository.
+* [Anaconda .yml file](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/quadcopter_project.yml)
