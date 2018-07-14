@@ -8,17 +8,24 @@
 ### Overview:
 
 * I designed a reinforcement learning task for flying a quadcopter in a simulated environment, and built an agent that autonomously learned to perform the task.
+
+    <img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/images/parrot-ar-drone.jpg" height="200">
 * The goal of the task was for an agent to learn to take off, ascend to a fixed height, and keep the quadcopter hovering at this height while remaining directly above the position on the ground from where it took off.
 * This involved my crafting a straightforward reward function that would incentivize an agent to first take off, and then remain hovering at a constant altitude.
 * My agent uses the [deep deterministic policy gradient (DDPG)](https://arxiv.org/pdf/1509.02971.pdf) invented by Lillicrap, Timothy P., et al.
 * I first implemented a DDPG agent that could solve OpenAI Gym's [MountainCarContinuous-v0](https://github.com/openai/gym/wiki/MountainCarContinuous-v0) task.
 
-    <img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/images/MountainCarContinuous-v0.png" height="240">
+    <img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/images/MountainCarContinuous-v0.png" height="200">
 * I then tweaked this DDPG model's hyperparameters as well as the hidden layer architecture of its actor and critic networks in order to achieve better performance in the quadcopter's simulated physics environment.
 
 ### Concepts:
 
-* 
+* Deep Q Learning
+* Reinforcement learning in continuous spaces
+* Actor/Critic models
+* DDPG
+* Ornstein-Uhlenbeck noise
+*
 
 ### My completed project:
 
