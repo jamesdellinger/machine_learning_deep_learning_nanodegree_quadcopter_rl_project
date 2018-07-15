@@ -33,6 +33,8 @@ Topic: Deep Reinforcement Learning.
 * Batch normalization
 * elu, relu, and tanh activation functions
 * Ornstein-Uhlenbeck noise
+* Keras
+* TensorFlow
 
 ## My Completed Project
 * [ipython notebook](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.ipynb) / [html version](http://htmlpreview.github.com/?https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/report.html) / [pdf version](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.pdf)
