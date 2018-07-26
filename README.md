@@ -36,13 +36,13 @@ Topic: Deep Reinforcement Learning.
 * Keras
 * TensorFlow
 
-## My Completed Project
-* [ipython notebook](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.ipynb) / [html version](http://htmlpreview.github.com/?https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/report.html) / [pdf version](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.pdf)
-
 ## My Agents and Custom Learning Task
 * [DDPG Agent for MountainCarContinuous-v0](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_quadcopter_rl_project/blob/master/model_ddpg_agent_mountain_car_continuous.py)
 * [DDPG Agent for a Quadcopter Task](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_quadcopter_rl_project/blob/master/model.py)
 * [Quadcopter Task (based on my custom reward function)](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_quadcopter_rl_project/blob/master/task.py)
+
+## My Completed Project
+* [ipython notebook](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.ipynb) / [html version](http://htmlpreview.github.com/?https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/report.html) / [pdf version](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_Project.pdf)
 
 ## Project Grading and Evaluation
 * [Project Review](https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/Quadcopter_project_review.pdf)
