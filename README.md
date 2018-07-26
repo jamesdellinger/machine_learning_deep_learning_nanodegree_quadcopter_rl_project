@@ -1,5 +1,5 @@
 # Project: Deep Reinforcement Learning Quadcopter Controller
-*Teaching a Quadcopter how to fly.*
+*Teaching a Quadcopter to learn to fly.*
 
 <img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/mlndlogo.png" height="140">     <img src="https://github.com/jamesdellinger/machine_learning_deep_learning_nanodegree_Quadcopter_RL_project/blob/master/dlndlogo.png" height="140">
 
