@@ -7,9 +7,11 @@ import keras
 """
 Several parameter choices and network architecture inspired
 by approach of user 'lirnli.' Their implementation of DDPG
-(https://github.com/lirnli/OpenAI-gym-solutions/blob/master/Continuous_Deep_Deterministic_Policy_Gradient_Net/DDPG%20Class%20ver2.ipynb) is 
-currently in 3rd place on the MountainCarContinuous-v0
-leaderboard on OpenAI Gym (https://github.com/openai/gym/wiki/Leaderboard#mountaincarcontinuous-v0)
+(https://github.com/lirnli/OpenAI-gym-solutions/blob/master
+/Continuous_Deep_Deterministic_Policy_Gradient_Net
+/DDPG%20Class%20ver2.ipynb) is currently in 3rd place on the
+MountainCarContinuous-v0 leaderboard on OpenAI Gym
+(https://github.com/openai/gym/wiki/Leaderboard#mountaincarcontinuous-v0)
 as of July, 2018.
 """
 
